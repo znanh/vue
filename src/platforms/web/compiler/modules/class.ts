@@ -1,6 +1,7 @@
 import { parseText } from 'compiler/parser/text-parser'
 import { getAndRemoveAttr, getBindingAttr, baseWarn } from 'compiler/helpers'
 import { ASTElement, CompilerOptions, ModuleOptions } from 'types/compiler'
+import { hasOwn } from 'shared/util'
 
 function transformNode(el: ASTElement, options: CompilerOptions) {
   const warn = options.warn || baseWarn
@@ -28,10 +29,10 @@ function transformNode(el: ASTElement, options: CompilerOptions) {
 
 function genData(el: ASTElement): string {
   let data = ''
-  if (el.staticClass) {
+  if (hasOwn(el, 'staticClass') && el.staticClass) {
     data += `staticClass:${el.staticClass},`
   }
-  if (el.classBinding) {
+  if (hasOwn(el, 'classBinding') && el.classBinding) {
     data += `class:${el.classBinding},`
   }
   return data

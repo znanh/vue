@@ -24,6 +24,7 @@ import { escape } from '../util'
 import { optimizability } from './optimizer'
 import type { CodegenResult } from 'compiler/codegen/index'
 import { ASTElement, ASTNode, CompilerOptions } from 'types/compiler'
+import { hasOwn } from 'shared/util'
 
 export type StringSegment = {
   type: number
@@ -169,14 +170,19 @@ function elementToOpenTagSegments(el, state): Array<StringSegment> {
     segments.push({ type: EXPRESSION, value: `_ssrDOMProps(${binding})` })
   }
   // class
-  if (el.staticClass || el.classBinding) {
+
+  const hasStaticClass = hasOwn(el, 'staticClass') && el.staticClass
+  const hasClassBinding = hasOwn(el, 'classBinding') && el.classBinding
+  if (hasStaticClass || hasClassBinding) {
     segments.push.apply(
       segments,
       genClassSegments(el.staticClass, el.classBinding)
     )
   }
   // style & v-show
-  if (el.staticStyle || el.styleBinding || el.attrsMap['v-show']) {
+  const hasStaticStyle = hasOwn(el, 'staticStyle') && el.staticStyle
+  const hasStyleBinding = hasOwn(el, 'styleBinding') && el.styleBinding
+  if (hasStaticStyle || hasStyleBinding || el.attrsMap['v-show']) {
     segments.push.apply(
       segments,
       genStyleSegments(

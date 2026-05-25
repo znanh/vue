@@ -2,6 +2,7 @@ import { parseText } from 'compiler/parser/text-parser'
 import { parseStyleText } from 'web/util/style'
 import { getAndRemoveAttr, getBindingAttr, baseWarn } from 'compiler/helpers'
 import { ASTElement, CompilerOptions, ModuleOptions } from 'types/compiler'
+import { hasOwn } from 'shared/util'
 
 function transformNode(el: ASTElement, options: CompilerOptions) {
   const warn = options.warn || baseWarn
@@ -31,10 +32,10 @@ function transformNode(el: ASTElement, options: CompilerOptions) {
 
 function genData(el: ASTElement): string {
   let data = ''
-  if (el.staticStyle) {
+  if (hasOwn(el, 'staticStyle') && el.staticStyle) {
     data += `staticStyle:${el.staticStyle},`
   }
-  if (el.styleBinding) {
+  if (hasOwn(el, 'styleBinding') && el.styleBinding) {
     data += `style:(${el.styleBinding}),`
   }
   return data
